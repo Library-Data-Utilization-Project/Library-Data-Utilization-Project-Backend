@@ -13,5 +13,8 @@
 	<select id="getUserById">
 		select * from user where userId = #{userId}
 	</select>
+	<select id="getUsers">
+		select * from user;
+	</select>
 	
 </mapper>

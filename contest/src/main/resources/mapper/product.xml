@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.contest.rest.mapper.ProductMapper">
+	<!-- Create -->
+	<insert id="insertProduct">
+		insert into product(p_num, p_name, p_info, p_level, p_cost, p_amount)
+		values(#{pNum}, #{pName}, #{pInfo}, #{pLevel}, #{pCost}, #{pAmount})
+	</insert>
+	
+	<!-- Read -->
+	<select id="getProductByName">
+		select * from product where p_name = #{pName}
+	</select>
+	<select id="getProducts">
+		select * from product
+	</select>
+	
+	<!-- Update -->
+	<update id="updateProduct">
+		update product
+		set
+		p_name = #{product.pName},
+		p_info = #{product.pInfo},
+		p_level = #{product.pLevel},
+		p_cost = #{product.pCost},
+		p_amount = #{product.pAmount}
+		where p_name = #{oldpName}
+	</update>
+	
+	<!-- delete -->
+	<delete id="deleteProduct">
+		delete from product
+		where p_name = #{pName}
+	</delete>
+</mapper>
