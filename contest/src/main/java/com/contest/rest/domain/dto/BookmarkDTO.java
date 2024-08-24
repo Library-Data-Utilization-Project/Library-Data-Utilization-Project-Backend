@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class BookmarkDTO {
-	private int bm_num;
+	private int bMnum;
 	private String userId;
-	private int LBRRY_SEQ_NO;
+	private int LBRRYSEQNO;
 }

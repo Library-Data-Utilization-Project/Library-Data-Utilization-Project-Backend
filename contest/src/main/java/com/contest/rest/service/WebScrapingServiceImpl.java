@@ -35,7 +35,6 @@ public class WebScrapingServiceImpl implements WebScrapingService {
                 // 데이터 매핑
                 if (cells.size() >= 6) { // 안전하게 6개 이상의 셀이 있는지 확인
                     hotBorrowInfo.setHb_IBSN(cells.get(5).getText()); // IBSN
-                    hotBorrowInfo.setDate("2024-08-19"); // 기준일 (하드코딩된 값)
                     hotBorrowInfo.setHb_num(Integer.parseInt(cells.get(0).getText())); // 번호
                     hotBorrowInfo.setIncrease(Integer.parseInt(cells.get(1).getText())); // 상승폭
                     hotBorrowInfo.setThisWeek_rank(Integer.parseInt(cells.get(2).getText())); // 이번 주 순위
@@ -48,7 +47,20 @@ public class WebScrapingServiceImpl implements WebScrapingService {
                         hotBorrowInfo.setThumbnail_url(imgUrl); // 이미지 URL
                     }
 
-                    hotBorrowInfo.setTitle_info(cells.get(4).getText()); // 서명 및 출판 정보
+                    // 서명 및 출판 정보 추출
+                    String titleInfo = cells.get(4).getText();
+                    String[] titleInfoParts = titleInfo.split("\n", 2);
+
+                    if (titleInfoParts.length >= 2) {
+                        hotBorrowInfo.setTitle(titleInfoParts[0]); // 서명
+                        hotBorrowInfo.setInfo(titleInfoParts[1]); // 저자 | 출판사 | 출판년도
+                    } else if (titleInfoParts.length == 1) {
+                        hotBorrowInfo.setTitle(titleInfoParts[0]); // 서명
+                        hotBorrowInfo.setInfo(""); // 추가 정보가 없을 경우 빈 문자열 설정
+                    } else {
+                        hotBorrowInfo.setTitle(""); // 서명이 없는 경우 빈 문자열 설정
+                        hotBorrowInfo.setInfo(""); // 추가 정보가 없는 경우 빈 문자열 설정
+                    }
                 }
 
                 hotBorrowList.add(hotBorrowInfo);

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.contest.rest.mapper.Borrow_infoMapper">
+	<!-- Create -->
+	
+	<!-- Read -->
+	<select id="getBiListByUseridThisMonth" resultType="com.contest.rest.domain.dto.Borrow_infoDTO">
+		SELECT *
+		FROM borrow_info
+		WHERE userId = #{userId}
+		AND DATE_FORMAT(borrow_day, '%Y-%m') = #{thisMonth};
+	</select>
+
+	<!-- Update -->
+
+	<!-- delete -->
+</mapper>
