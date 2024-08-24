@@ -8,8 +8,6 @@ import lombok.Data;
 public class HotBorrow_infoDTO {
 	@JsonProperty("hb_IBSN")
 	private String hb_IBSN;
-	@JsonProperty("date")
-	private String date;
 	@JsonProperty("hb_num")
 	private int hb_num;
 	@JsonProperty("increase")
@@ -20,6 +18,8 @@ public class HotBorrow_infoDTO {
 	private int lestWeek_rank;
 	@JsonProperty("thumbnail_url")
 	private String thumbnail_url;
-	@JsonProperty("title_info")
-	private String title_info;
+	@JsonProperty("title")
+	private String title;
+	@JsonProperty("info")
+	private String info;
 }

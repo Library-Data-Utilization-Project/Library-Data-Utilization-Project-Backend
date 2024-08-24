@@ -8,5 +8,6 @@ public class UserDTO {
 	private String userName;
 	private String profile;
 	private String level;
+	private String exp;
 	private String point;
 }

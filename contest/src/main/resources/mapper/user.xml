@@ -5,8 +5,8 @@
 <mapper namespace="com.contest.rest.mapper.UserMapper">
 	<!-- Create -->
 	<insert id="insertUser">
-		insert into user(userId, userName, profile, level, point)
-		values(#{userId}, #{userName}, #{profile}, 0, 0)
+		insert into user(userId, userName, profile, level, exp, point)
+		values(#{userId}, #{userName}, #{profile}, 0, 0, 0)
 	</insert>
 	
 	<!-- Read -->
