@@ -4,6 +4,9 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.contest.rest.mapper.Attendance_infoMapper">
 	<!-- Create -->
+	<insert id="insertAiByUserIdAndLBRRY_SEQ_NO">
+		INSERT INTO attendance_info (userId, LBRRY_SEQ_NO) VALUES (#{userId}, #{LBRRY_SEQ_NO});
+	</insert>
 	
 	<!-- Read -->
 	<select id="getAiListByUseridAndThisMonth" resultType="com.contest.rest.domain.dto.Attendance_infoDTO">
@@ -11,6 +14,19 @@
 		FROM attendance_info
 		WHERE userId = #{userId}
 		AND DATE_FORMAT(ai_date, '%Y-%m') = #{thisMonth};
+	</select>
+	
+	<select id="getAiByUserIdAndThisDay">
+		SELECT *
+		FROM attendance_info
+		WHERE userId = #{userId}
+		AND ai_date = #{thisDay};
+	</select>
+	
+	<select id="getAiListByUseridAndLBRRY_SEQ_NO">
+		select * from attendance_info
+		where userId = #{userId}
+		and LBRRY_SEQ_NO = #{LBRRY_SEQ_NO}
 	</select>
 
 

@@ -13,9 +13,16 @@ public class Borrow_infoServiceImpl implements Borrow_infoService{
 	@Autowired
 	Borrow_infoMapper bimapper;
 	
+	// 특정 유저 대출 정보 List 뽑아오기.
 	@Override
 	public List<Borrow_infoDTO> getBiList(String userId, String thisMonth) {
 		return bimapper.getBiListByUseridThisMonth(userId, thisMonth);
+	}
+
+	// 대출 정보 추가하기.
+	@Override
+	public boolean addBi(String userId) {
+		return bimapper.insertBiByUserid(userId) == 1;
 	}
 
 }

@@ -11,4 +11,6 @@ public interface UserService {
 	UserDTO getUser(String userId);
 	// 유저 전체 조회
 	List<UserDTO> getUsers();
+	// 경험치 추가
+	boolean addExp(String userId, int exp);
 }

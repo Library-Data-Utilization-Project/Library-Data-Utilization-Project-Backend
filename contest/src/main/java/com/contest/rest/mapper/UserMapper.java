@@ -14,5 +14,8 @@ public interface UserMapper {
 	UserDTO getUserById(String userId);
 	List<UserDTO> getUsers();
 	// Update
+	void addExpById(String userId, int exp);
+	void resetExpById(String userId);
+	void addLevelById(String userId, int level);
 	// Delete
 }

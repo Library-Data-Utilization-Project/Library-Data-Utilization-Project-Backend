@@ -30,4 +30,23 @@ public class UserServiceImpl implements UserService {
 	public List<UserDTO> getUsers() {
 		return umapper.getUsers();
 	}
+
+	// 경험치 추가
+	@Override
+	public boolean addExp(String userId, int exp) {
+		umapper.addExpById(userId, exp);
+		
+		UserDTO loginUserDTO = umapper.getUserById(userId);
+		int logExp = Integer.parseInt(loginUserDTO.getExp());
+		
+		if(logExp >= 40) {
+			umapper.resetExpById(userId);
+			int level = 1;
+			umapper.addLevelById(userId, level);
+			return true;
+		}
+		else {
+			return true;
+		}
+	}
 }

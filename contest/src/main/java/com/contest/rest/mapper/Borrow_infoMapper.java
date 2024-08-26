@@ -9,9 +9,11 @@ import com.contest.rest.domain.dto.Borrow_infoDTO;
 @Mapper
 public interface Borrow_infoMapper {
 	// Create
+	int insertBiByUserid(String userId);
 	// Read
 	List<Borrow_infoDTO> getBiListByUseridThisMonth(String userId, String thisMonth);
 	// Update
 	// Delete
+
 
 }

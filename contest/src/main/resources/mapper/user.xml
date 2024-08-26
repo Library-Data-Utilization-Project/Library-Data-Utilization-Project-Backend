@@ -17,4 +17,21 @@
 		select * from user;
 	</select>
 	
+	<!-- Update -->
+	<update id="addExpById">
+		update user
+		set exp = exp + #{exp}
+		where userId = #{userId} 
+	</update>
+	<update id="resetExpById">
+		UPDATE user
+		SET exp = 0
+		WHERE userId = #{userId};
+	</update>
+	<update id="addLevelById">
+		update user
+		set level = level + #{level}
+		where userId = #{userId}
+	</update>
+	
 </mapper>

@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.contest.rest.domain.dto.Attendance_infoDTO;
+import com.contest.rest.domain.dto.Average_monthly_borrowDTO;
 import com.contest.rest.domain.dto.Borrow_infoDTO;
 import com.contest.rest.domain.dto.UserDTO;
 import com.contest.rest.service.Attendance_infoService;
+import com.contest.rest.service.Average_monthly_borrowService;
 import com.contest.rest.service.Borrow_infoService;
 import com.contest.rest.service.UserService;
 
@@ -45,6 +47,8 @@ public class UserController {
 	private Attendance_infoService aiservice;
 	@Autowired
 	private Borrow_infoService biservice;
+	@Autowired
+	private Average_monthly_borrowService ambservice;
 	
 	// 로그인
 	@PostMapping("/login")
@@ -92,7 +96,8 @@ public class UserController {
 		
 		// 1. session에서 loginUesr 가져오기.
 		HttpSession session = request.getSession();
-		String loginUser = (String)session.getAttribute("loginUser");
+		String loginUser = "유저1";
+//		String loginUser = (String)session.getAttribute("loginUser");
 		
 		// 2. UserDTO 가져오기.
 		UserDTO luDTO = uservice.getUser(loginUser);
@@ -106,6 +111,11 @@ public class UserController {
 		List<Borrow_infoDTO> Bi_list = biservice.getBiList(loginUser, thisMonth);
 		int thisMounth_Bi = Bi_list.size();
 		
+		// 5. 청소년 평균 대출 횟수 - 이번달 대출 횟수
+		Average_monthly_borrowDTO amb = ambservice.getAmb(thisMonth);
+		int thisMounth_Bi_t = amb.getAverage() - thisMounth_Bi;
+		
+		
 		// 5. 모든 정보 합치기
 		List<Map<String, Object>> total = new ArrayList<>();
 		Map<String, Object> map = new HashMap<>();
@@ -118,6 +128,7 @@ public class UserController {
 		map.put("thisMounth_Ai", thisMounth_Ai);
 		map.put("thisMounth_Ai_p", thisMounth_Ai_p);
 		map.put("thisMounth_Bi", thisMounth_Bi);
+		map.put("thisMounth_Bi_t", thisMounth_Bi_t);
 		
 		total.add(map);
 		

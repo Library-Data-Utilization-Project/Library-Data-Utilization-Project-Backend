@@ -9,9 +9,12 @@ import com.contest.rest.domain.dto.Attendance_infoDTO;
 @Mapper
 public interface Attendance_infoMapper {
 	// Create
+	int insertAiByUserIdAndLBRRY_SEQ_NO(String userId, int LBRRY_SEQ_NO);
 	
 	// Read
 	List<Attendance_infoDTO> getAiListByUseridAndThisMonth(String userId, String thisMonth);
+	Attendance_infoDTO getAiByUserIdAndThisDay(String userId, String thisDay);
+	List<Attendance_infoDTO> getAiListByUseridAndLBRRY_SEQ_NO(String userId, int LBRRY_SEQ_NO);
 	
 	// Update
 	
