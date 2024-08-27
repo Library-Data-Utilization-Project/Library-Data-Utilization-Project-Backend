@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
-@RequestMapping("/user/*")
+@RequestMapping("/user")
 public class UserController {
 	/* 
 	Create : 데이터 생성(POST)
