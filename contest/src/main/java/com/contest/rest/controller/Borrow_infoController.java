@@ -36,7 +36,7 @@ public class Borrow_infoController {
 	
 	// 특정 유저 대출 정보 등록.
 	@PostMapping()
-	public ResponseEntity<MemberDataDTO> addBi(@CookieValue("loginUser") String cookie, HttpServletRequest request, @RequestBody Borrow_infoDTO borrow_info) throws Exception {
+	public ResponseEntity<MemberDataDTO> addBi(@CookieValue("loginUser") String cookie, HttpServletRequest request) throws Exception {
 		// 세션에서 loginUser 구하기.
 		String loginUser = cookie;
 		
