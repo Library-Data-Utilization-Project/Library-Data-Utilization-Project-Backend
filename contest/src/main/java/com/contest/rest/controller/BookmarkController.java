@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.contest.rest.domain.dto.Attendance_infoDTO;
 import com.contest.rest.domain.dto.BookmarkDTO;
+import com.contest.rest.domain.dto.ProductDTO;
 import com.contest.rest.domain.dto.UserDTO;
 import com.contest.rest.service.Attendance_infoService;
 import com.contest.rest.service.BookmarkService;
@@ -20,6 +21,9 @@ import com.contest.rest.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -42,10 +46,9 @@ public class BookmarkController {
 	private Attendance_infoService aiservice;
 	
 	@PostMapping()
-	public ResponseEntity<?> addBookmark(HttpServletRequest request ,@RequestBody BookmarkDTO bookmark) throws Exception {
+	public ResponseEntity<?> addBookmark(@CookieValue("loginUser") String cookie, HttpServletRequest request ,@RequestBody BookmarkDTO bookmark) throws Exception {
 		// 세션에서 아이디 가져오기
-		HttpSession session = request.getSession();
-		String loginUser = (String)session.getAttribute("loginUser");
+		String loginUser = cookie;
 		
 		bookmark.setUserId(loginUser);
 		
@@ -76,5 +79,21 @@ public class BookmarkController {
 			return ResponseEntity.badRequest().body("등록된 회원이 아닙니다. 다시 로그인 하세요.");
 		}
 	}
+	
+//	// 특정 유저의 특정 북마크 삭제
+//	@DeleteMapping("/{LBRRY_NAME}")
+//	public ResponseEntity<?> deleteBookmark(HttpServletRequest request ,@PathVariable String LBRRY_NAME) throws Exception {
+//		// session에서 loginUser값 가져오기.
+//		HttpSession session = request.getSession();
+//		String loginUser = (String)session.getAttribute("loginUser");
+//		
+//		if(loginUser != null) {
+//			// loginUsr + LBRRY_NAME값으로 bookmarkDTO 데이터 검색
+//			bmservice.deleteBm(loginUser, LBRRY_NAME);
+//			return null;
+//			
+//		}
+//	
+//	}
 	
 }

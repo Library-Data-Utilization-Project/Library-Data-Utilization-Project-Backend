@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +25,9 @@ import com.contest.rest.service.Average_monthly_borrowService;
 import com.contest.rest.service.Borrow_infoService;
 import com.contest.rest.service.UserService;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,10 +55,15 @@ public class UserController {
 	
 	// 로그인
 	@PostMapping("/login")
-	public ResponseEntity<?> join(HttpServletRequest request ,@RequestBody UserDTO user) throws Exception {
-		HttpSession session = request.getSession();
-		session.setAttribute("loginUser", user.getUserId());
+	public ResponseEntity<?> join(HttpServletRequest request, HttpServletResponse response ,@RequestBody UserDTO user) throws Exception {
+		// 세션에 userId 값 넣기
+		String loginUser = user.getUserId();
+		Cookie cookie = new Cookie("loginUser", loginUser);
+		cookie.setPath("/");
+		cookie.setMaxAge(1*60*60); // 1시간 저장
+		response.addCookie(cookie);
 		
+		//DB에서 유저 정보가 있는지 확인.
 		UserDTO checkUser = uservice.getUser(user.getUserId());
 		
 		// 등록되지 않은 user이면
@@ -64,21 +72,22 @@ public class UserController {
 			UserDTO newUser = uservice.getUser(user.getUserId());
 			
 			System.out.println("회원가입 완료 : " + newUser);
-			return ResponseEntity.status(200).body(newUser);
+			return ResponseEntity.ok(user.getUserId()+"님이 회원가입 되었습니다. 환영합니다!");
 		}
 		// 이미 등록되어있는 user이면
 		else {
 			System.out.println("이미 가입된 회원입니다 : " + checkUser);
-			return ResponseEntity.status(200).body(checkUser);
+			return ResponseEntity.ok(user.getUserId()+"님은 이미 가입된 회원입니다. 반갑습니다! 세션값 : ");
 		}
 		
 	}
 	
 	// 로그아웃
 	@GetMapping("/logout")
-	public String logout(HttpServletRequest request) {
-		
-		return new String();
+	public ResponseEntity<?> logout(HttpServletRequest request) {
+		System.out.println("로그아웃됨");
+		return ResponseEntity.ok("로그아웃 되었습니다. 이용해주셔서 감사합니다.");
+
 	}
 	
 	// 유저 전체 조회
@@ -90,14 +99,12 @@ public class UserController {
 	
 	// 유저정보, 출석횟수, 대출횟수 조회
 	@GetMapping("/count")
-	public ResponseEntity<?> getMethodName(HttpServletRequest request) throws Exception {
+	public ResponseEntity<?> getMethodName(HttpServletRequest request, @CookieValue("loginUser") String cookie ) throws Exception {
 		LocalDate now = LocalDate.now();
 		String thisMonth = now.format(DateTimeFormatter.ofPattern("yyyy-MM")); // "2024-08" 형식
 		
-		// 1. session에서 loginUesr 가져오기.
-		HttpSession session = request.getSession();
-		String loginUser = "유저1";
-//		String loginUser = (String)session.getAttribute("loginUser");
+		// 1. 쿠키에서 loginUesr 가져오기.
+		String loginUser = cookie;
 		
 		// 2. UserDTO 가져오기.
 		UserDTO luDTO = uservice.getUser(loginUser);

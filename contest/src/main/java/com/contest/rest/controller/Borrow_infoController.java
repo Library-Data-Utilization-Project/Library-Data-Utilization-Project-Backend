@@ -12,6 +12,7 @@ import com.contest.rest.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -33,15 +34,16 @@ public class Borrow_infoController {
 	
 	// 특정 유저 대출 정보 등록.
 	@PostMapping()
-	public ResponseEntity<?> addBi(HttpServletRequest request, @RequestBody Borrow_infoDTO borrow_info) throws Exception {
+	public ResponseEntity<?> addBi(@CookieValue("loginUser") String cookie, HttpServletRequest request, @RequestBody Borrow_infoDTO borrow_info) throws Exception {
 		// 세션에서 loginUser 구하기.
-		HttpSession session = request.getSession();
-		String loginUser = (String)session.getAttribute("loginUser");
+		String loginUser = cookie;
 		
 		// 로그인 유저 존재 여부 확인.
 		if(uservice.getUser(loginUser) != null) {
 			// 대출 정보 추가하기.
 			biservice.addBi(loginUser);
+			
+			// login User에
 			return ResponseEntity.ok(loginUser+"님의 대출 정보가 저장되었습니다.");
 		}
 		else {

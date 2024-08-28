@@ -16,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -36,9 +37,8 @@ public class Attendance_infoController {
 	
 	// 출석하기.
 	@PostMapping()
-	public ResponseEntity<?> attendance(HttpServletRequest request, @RequestBody Attendance_infoDTO Ai) throws Exception {
-		HttpSession session = request.getSession();
-		String loginUser = (String)session.getAttribute("loginUser");
+	public ResponseEntity<?> attendance(@CookieValue("loginUser") String cookie ,HttpServletRequest request, @RequestBody Attendance_infoDTO Ai) throws Exception {
+		String loginUser = cookie;
 		
 		int LBRRY_SEQ_NO = Ai.getLBRRYSEQNO();
 		

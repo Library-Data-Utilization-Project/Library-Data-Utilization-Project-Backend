@@ -16,5 +16,10 @@ public class BookmarkServiceImpl implements BookmarkService{
 	public boolean addBm(BookmarkDTO bookmark) {
 		return bmmapper.insertBmByUserid(bookmark) == 1;
 	}
+
+	@Override
+	public boolean deleteBm(String loginUser, String lBRRY_NAME) {
+		return false;
+	}
 	
 }
