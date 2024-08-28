@@ -90,14 +90,29 @@ public class UserController {
 	
 	// 로그아웃
 	@GetMapping("/logout")
-	public ResponseEntity<MemberDataDTO> logout(HttpServletRequest request) {
-		System.out.println("로그아웃됨");
-		
-		MemberDataDTO memberData = new MemberDataDTO();
-		
-		memberData.setSuccess(true);
-		memberData.setMessage("이용해주셔서 감사합니다!");
-		return new ResponseEntity<>(memberData, HttpStatus.OK);
+	public ResponseEntity<MemberDataDTO> logout(HttpServletRequest request, HttpServletResponse response) {
+	    System.out.println("로그아웃됨");
+
+	    // 기존 쿠키 찾기
+	    Cookie[] cookies = request.getCookies();
+	    if (cookies != null) {
+	        for (Cookie cookie : cookies) {
+	            if ("loginUser".equals(cookie.getName())) {
+	                // 쿠키 삭제 (유효기간을 0으로 설정)
+	                cookie.setValue(null);
+	                cookie.setMaxAge(0);
+	                cookie.setPath("/"); // 쿠키의 경로를 설정합니다. 원래 쿠키가 설정된 경로와 일치해야 합니다.
+	                response.addCookie(cookie);
+	            }
+	        }
+	    }
+
+	    // 응답 데이터 설정
+	    MemberDataDTO memberData = new MemberDataDTO();
+	    memberData.setSuccess(true);
+	    memberData.setMessage("이용해주셔서 감사합니다!");
+	    
+	    return new ResponseEntity<>(memberData, HttpStatus.OK);
 	}
 	
 	// 유저 전체 조회
