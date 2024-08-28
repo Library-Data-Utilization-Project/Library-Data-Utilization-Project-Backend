@@ -11,5 +11,7 @@ public interface BookmarkMapper {
 	// Read
 	// Update
 	// Delete
+	int deleteBmByUseriLBRRY_NAME(String userId, String LBRRY_NAME);
+
 
 }

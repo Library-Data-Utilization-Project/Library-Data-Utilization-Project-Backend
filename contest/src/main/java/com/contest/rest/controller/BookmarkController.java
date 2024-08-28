@@ -88,20 +88,27 @@ public class BookmarkController {
 		}
 	}
 	
-//	// 특정 유저의 특정 북마크 삭제
-//	@DeleteMapping("/{LBRRY_NAME}")
-//	public ResponseEntity<?> deleteBookmark(HttpServletRequest request ,@PathVariable String LBRRY_NAME) throws Exception {
-//		// session에서 loginUser값 가져오기.
-//		HttpSession session = request.getSession();
-//		String loginUser = (String)session.getAttribute("loginUser");
-//		
-//		if(loginUser != null) {
-//			// loginUsr + LBRRY_NAME값으로 bookmarkDTO 데이터 검색
-//			bmservice.deleteBm(loginUser, LBRRY_NAME);
-//			return null;
-//			
-//		}
-//	
-//	}
+	// 특정 유저의 특정 북마크 삭제
+	@DeleteMapping("/{LBRRY_NAME}")
+	public ResponseEntity<?> deleteBookmark(@CookieValue("loginUser") String cookie, HttpServletRequest request ,@PathVariable String LBRRY_NAME) throws Exception {
+		// 쿠키값에서 loginUser가져오기.
+		String loginUser = cookie;
+		MemberDataDTO memberData = new MemberDataDTO();
+		
+		if(loginUser != null) {
+			// loginUsr + LBRRY_NAME값으로 bookmarkDTO 데이터 검색
+			bmservice.deleteBm(loginUser, LBRRY_NAME);
+			memberData.setSuccess(true);
+			memberData.setMessage(LBRRY_NAME+"번의 도서관에 대한 북마크가 정상적으로 지워졌습니다.");
+			return new ResponseEntity<>(memberData, HttpStatus.OK);
+			
+		}
+		else {
+			memberData.setSuccess(false);
+			memberData.setMessage("존재하지 않는 유저입니다. 다시 로그인 해주세요.");
+			return new ResponseEntity<>(memberData, HttpStatus.OK);
+		}
+	
+	}
 	
 }

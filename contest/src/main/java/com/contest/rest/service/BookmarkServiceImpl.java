@@ -18,8 +18,8 @@ public class BookmarkServiceImpl implements BookmarkService{
 	}
 
 	@Override
-	public boolean deleteBm(String loginUser, String lBRRY_NAME) {
-		return false;
+	public boolean deleteBm(String userId, String LBRRY_NAME) {
+		return bmmapper.deleteBmByUseriLBRRY_NAME(userId, LBRRY_NAME) == 1;
 	}
 	
 }
