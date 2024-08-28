@@ -6,12 +6,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.contest.rest.domain.dto.Attendance_infoDTO;
 import com.contest.rest.domain.dto.BookmarkDTO;
+import com.contest.rest.domain.dto.MemberDataDTO;
 import com.contest.rest.domain.dto.ProductDTO;
 import com.contest.rest.domain.dto.UserDTO;
 import com.contest.rest.service.Attendance_infoService;
@@ -46,12 +48,14 @@ public class BookmarkController {
 	private Attendance_infoService aiservice;
 	
 	@PostMapping()
-	public ResponseEntity<?> addBookmark(@CookieValue("loginUser") String cookie, HttpServletRequest request ,@RequestBody BookmarkDTO bookmark) throws Exception {
+	public ResponseEntity<MemberDataDTO> addBookmark(@CookieValue("loginUser") String cookie, HttpServletRequest request ,@RequestBody BookmarkDTO bookmark) throws Exception {
 		// 세션에서 아이디 가져오기
 		String loginUser = cookie;
 		
 		bookmark.setUserId(loginUser);
 		
+		MemberDataDTO memberData = new MemberDataDTO();
+
 		// user 유무 체크
 		if(uservice.getUser(loginUser) != null) {
 			// 북마크 추가하기.
@@ -73,10 +77,14 @@ public class BookmarkController {
 		
 			total.add(map);
 						
-			return ResponseEntity.status(200).body(total);
+			memberData.setSuccess(true);
+			memberData.setMessage(loginUser+"님의 북마크에"+bookmark.getLBRRYNAME()+"이(가) 등록되었습니다.");
+			return new ResponseEntity<>(memberData, HttpStatus.OK);
 		}
 		else {
-			return ResponseEntity.badRequest().body("등록된 회원이 아닙니다. 다시 로그인 하세요.");
+			memberData.setSuccess(false);
+			memberData.setMessage("존재하지 않는 유저입니다. 다시 로그인 하세요.");
+			return new ResponseEntity<>(memberData, HttpStatus.OK);
 		}
 	}
 	

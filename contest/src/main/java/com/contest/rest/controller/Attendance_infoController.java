@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.contest.rest.domain.dto.Attendance_infoDTO;
+import com.contest.rest.domain.dto.MemberDataDTO;
 import com.contest.rest.domain.dto.UserDTO;
 import com.contest.rest.service.Attendance_infoService;
 import com.contest.rest.service.UserService;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,7 +39,7 @@ public class Attendance_infoController {
 	
 	// 출석하기.
 	@PostMapping()
-	public ResponseEntity<?> attendance(@CookieValue("loginUser") String cookie ,HttpServletRequest request, @RequestBody Attendance_infoDTO Ai) throws Exception {
+	public ResponseEntity<MemberDataDTO> attendance(@CookieValue("loginUser") String cookie ,HttpServletRequest request, @RequestBody Attendance_infoDTO Ai) throws Exception {
 		String loginUser = cookie;
 		
 		int LBRRY_SEQ_NO = Ai.getLBRRYSEQNO();
@@ -45,16 +47,24 @@ public class Attendance_infoController {
 		LocalDate now = LocalDate.now();
 		String thisDay = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")); // "2024-08-25" 형식
 
+		MemberDataDTO memberData = new MemberDataDTO();
+		
+
 		// 1. loginUser가 오늘 출석 했는지 확인.
 		if(aiservice.checkAttendance(loginUser, thisDay) == null) {
 			// 2. 오늘 출석 안했다면 출석 정보 등록.
 			aiservice.attendance(loginUser, LBRRY_SEQ_NO);
 			// 3. 경험치 +10 추가
 			uservice.addExp(loginUser, 10);
-			return ResponseEntity.ok("출석체크 및  완료.");
+			
+			memberData.setSuccess(true);
+			memberData.setMessage(loginUser+"님의 출석 정보가 등록되었습니다.");
+			return new ResponseEntity<>(memberData, HttpStatus.OK);
 		}
 		else {
-			return ResponseEntity.badRequest().body("오늘은 이미 출석을 했습니다.");
+			memberData.setSuccess(false);
+			memberData.setMessage(loginUser+"님의 오늘 출석을 하셨습니다.");
+			return new ResponseEntity<>(memberData, HttpStatus.OK);
 		}
 	}
 	

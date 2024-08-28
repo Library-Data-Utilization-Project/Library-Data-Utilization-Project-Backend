@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.contest.rest.domain.dto.Attendance_infoDTO;
 import com.contest.rest.domain.dto.Average_monthly_borrowDTO;
 import com.contest.rest.domain.dto.Borrow_infoDTO;
+import com.contest.rest.domain.dto.MemberDataDTO;
 import com.contest.rest.domain.dto.UserDTO;
 import com.contest.rest.service.Attendance_infoService;
 import com.contest.rest.service.Average_monthly_borrowService;
@@ -55,13 +57,15 @@ public class UserController {
 	
 	// 로그인
 	@PostMapping("/login")
-	public ResponseEntity<?> join(HttpServletRequest request, HttpServletResponse response ,@RequestBody UserDTO user) throws Exception {
+	public ResponseEntity<MemberDataDTO> join(HttpServletRequest request, HttpServletResponse response ,@RequestBody UserDTO user) throws Exception {
 		// 세션에 userId 값 넣기
 		String loginUser = user.getUserId();
 		Cookie cookie = new Cookie("loginUser", loginUser);
 		cookie.setPath("/");
 		cookie.setMaxAge(1*60*60); // 1시간 저장
 		response.addCookie(cookie);
+		
+		MemberDataDTO memberData = new MemberDataDTO();
 		
 		//DB에서 유저 정보가 있는지 확인.
 		UserDTO checkUser = uservice.getUser(user.getUserId());
@@ -70,76 +74,100 @@ public class UserController {
 		if(checkUser == null) {
 			uservice.join(user);
 			UserDTO newUser = uservice.getUser(user.getUserId());
-			
-			System.out.println("회원가입 완료 : " + newUser);
-			return ResponseEntity.ok(user.getUserId()+"님이 회원가입 되었습니다. 환영합니다!");
+
+			memberData.setSuccess(true);
+			memberData.setMessage(loginUser+"님의 회원가입이 완료되었습니다. 환영합니다!");
+			return new ResponseEntity<>(memberData, HttpStatus.OK);
 		}
 		// 이미 등록되어있는 user이면
 		else {
-			System.out.println("이미 가입된 회원입니다 : " + checkUser);
-			return ResponseEntity.ok(user.getUserId()+"님은 이미 가입된 회원입니다. 반갑습니다! 세션값 : ");
+			memberData.setSuccess(true);
+			memberData.setMessage(loginUser+"님의 정보가 존재합니다. 또 오셨군요, 반갑습니다!");
+			return new ResponseEntity<>(memberData, HttpStatus.OK);
 		}
 		
 	}
 	
 	// 로그아웃
 	@GetMapping("/logout")
-	public ResponseEntity<?> logout(HttpServletRequest request) {
+	public ResponseEntity<MemberDataDTO> logout(HttpServletRequest request) {
 		System.out.println("로그아웃됨");
-		return ResponseEntity.ok("로그아웃 되었습니다. 이용해주셔서 감사합니다.");
-
+		
+		MemberDataDTO memberData = new MemberDataDTO();
+		
+		memberData.setSuccess(true);
+		memberData.setMessage("이용해주셔서 감사합니다!");
+		return new ResponseEntity<>(memberData, HttpStatus.OK);
 	}
 	
 	// 유저 전체 조회
 	@GetMapping()
-	public ResponseEntity<?> getUsers() {
+	public ResponseEntity<MemberDataDTO> getUsers() {
+		MemberDataDTO memberData = new MemberDataDTO();
+		
 		List<UserDTO> userList = uservice.getUsers();
-		return ResponseEntity.status(200).body(userList);
+		memberData.setSuccess(true);
+		memberData.setMessage("모든 정보의 유저를 불러왔습니다!");
+		memberData.setResult(userList);
+		return new ResponseEntity<>(memberData, HttpStatus.OK);
 	}
 	
 	// 유저정보, 출석횟수, 대출횟수 조회
 	@GetMapping("/count")
-	public ResponseEntity<?> getMethodName(HttpServletRequest request, @CookieValue("loginUser") String cookie ) throws Exception {
+	public ResponseEntity<MemberDataDTO> getMethodName(HttpServletRequest request, @CookieValue("loginUser") String cookie ) throws Exception {
 		LocalDate now = LocalDate.now();
 		String thisMonth = now.format(DateTimeFormatter.ofPattern("yyyy-MM")); // "2024-08" 형식
 		
+		MemberDataDTO memberData = new MemberDataDTO();
+
 		// 1. 쿠키에서 loginUesr 가져오기.
 		String loginUser = cookie;
 		
 		// 2. UserDTO 가져오기.
 		UserDTO luDTO = uservice.getUser(loginUser);
 		
-		// 3. 이번달 출석 퍼센트 구하기.
-		List<Attendance_infoDTO> Ai_list = aiservice.getAiList(loginUser, thisMonth);
-		int thisMounth_Ai = Ai_list.size();
-		int thisMounth_Ai_p = (int)((thisMounth_Ai / 30.0) * 100); // 1달을 30일로 가정하여 퍼센트를 계산
+		if(luDTO != null) {
+			// 3. 이번달 출석 퍼센트 구하기.
+			List<Attendance_infoDTO> Ai_list = aiservice.getAiList(loginUser, thisMonth);
+			int thisMounth_Ai = Ai_list.size();
+			int thisMounth_Ai_p = (int)((thisMounth_Ai / 30.0) * 100); // 1달을 30일로 가정하여 퍼센트를 계산
+			
+			// 4. 이번달 대출 횟수 구하기.
+			List<Borrow_infoDTO> Bi_list = biservice.getBiList(loginUser, thisMonth);
+			int thisMounth_Bi = Bi_list.size();
+			
+			// 5. 청소년 평균 대출 횟수 - 이번달 대출 횟수
+			Average_monthly_borrowDTO amb = ambservice.getAmb(thisMonth);
+			int thisMounth_Bi_t = amb.getAverage() - thisMounth_Bi;
+			
+			
+			// 5. 모든 정보 합치기
+			List<Map<String, Object>> total = new ArrayList<>();
+			Map<String, Object> map = new HashMap<>();
+			map.put("userId", luDTO.getUserId());
+			map.put("userName", luDTO.getUserName());
+			map.put("profile", luDTO.getProfile());
+			map.put("level", luDTO.getLevel());
+			map.put("exp", luDTO.getExp());
+			map.put("point", luDTO.getPoint());
+			map.put("thisMounth_Ai", thisMounth_Ai);
+			map.put("thisMounth_Ai_p", thisMounth_Ai_p);
+			map.put("thisMounth_Bi", thisMounth_Bi);
+			map.put("thisMounth_Bi_t", thisMounth_Bi_t);
+			
+			total.add(map);
+			
+			memberData.setSuccess(true);
+			memberData.setMessage(loginUser+"님에 대한 모든 정보를 불러왔습니다.");
+			memberData.setResult(total);
+			return new ResponseEntity<>(memberData, HttpStatus.OK);
+		}
+		else {
+			memberData.setSuccess(true);
+			memberData.setMessage("존재하지 않는 유저입니다. 다시 로그인 하세요.");
+			return new ResponseEntity<>(memberData, HttpStatus.OK);
+		}
 		
-		// 4. 이번달 대출 횟수 구하기.
-		List<Borrow_infoDTO> Bi_list = biservice.getBiList(loginUser, thisMonth);
-		int thisMounth_Bi = Bi_list.size();
-		
-		// 5. 청소년 평균 대출 횟수 - 이번달 대출 횟수
-		Average_monthly_borrowDTO amb = ambservice.getAmb(thisMonth);
-		int thisMounth_Bi_t = amb.getAverage() - thisMounth_Bi;
-		
-		
-		// 5. 모든 정보 합치기
-		List<Map<String, Object>> total = new ArrayList<>();
-		Map<String, Object> map = new HashMap<>();
-		map.put("userId", luDTO.getUserId());
-		map.put("userName", luDTO.getUserName());
-		map.put("profile", luDTO.getProfile());
-		map.put("level", luDTO.getLevel());
-		map.put("exp", luDTO.getExp());
-		map.put("point", luDTO.getPoint());
-		map.put("thisMounth_Ai", thisMounth_Ai);
-		map.put("thisMounth_Ai_p", thisMounth_Ai_p);
-		map.put("thisMounth_Bi", thisMounth_Bi);
-		map.put("thisMounth_Bi_t", thisMounth_Bi_t);
-		
-		total.add(map);
-		
-		return ResponseEntity.status(200).body(total);
 	}
 	
 }
