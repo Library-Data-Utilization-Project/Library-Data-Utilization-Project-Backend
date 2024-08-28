@@ -13,8 +13,8 @@ public interface Attendance_infoService {
 	// 출석하기.
 	boolean attendance(String userId, int LBRRY_SEQ_NO);
 
-	// 오늘 출석 체크.
-	Attendance_infoDTO checkAttendance(String userId, String thisDay);
+	// 오늘 특정 도서관 출석 확인.
+	Attendance_infoDTO checkAttendance(String userId, String thisDay, int LBRRY_SEQ_NO);
 
 
 }

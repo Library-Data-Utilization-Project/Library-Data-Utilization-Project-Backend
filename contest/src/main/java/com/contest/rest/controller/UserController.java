@@ -138,10 +138,13 @@ public class UserController {
 			
 			// 5. 청소년 평균 대출 횟수 - 이번달 대출 횟수
 			Average_monthly_borrowDTO amb = ambservice.getAmb(thisMonth);
-			int thisMounth_Bi_t = amb.getAverage() - thisMounth_Bi;
+			int thisMounth_Bi_t = Math.abs(amb.getAverage() - thisMounth_Bi);
+			
+			// 6. 청소년 평균 대출횟수 구하기.
+			int average_Bi = amb.getAverage();
 			
 			
-			// 5. 모든 정보 합치기
+			// 7. 모든 정보 합치기
 			List<Map<String, Object>> total = new ArrayList<>();
 			Map<String, Object> map = new HashMap<>();
 			map.put("userId", luDTO.getUserId());
@@ -152,6 +155,7 @@ public class UserController {
 			map.put("point", luDTO.getPoint());
 			map.put("thisMounth_Ai", thisMounth_Ai);
 			map.put("thisMounth_Ai_p", thisMounth_Ai_p);
+			map.put("average_Bi", average_Bi);
 			map.put("thisMounth_Bi", thisMounth_Bi);
 			map.put("thisMounth_Bi_t", thisMounth_Bi_t);
 			

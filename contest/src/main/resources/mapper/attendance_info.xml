@@ -16,10 +16,11 @@
 		AND DATE_FORMAT(ai_date, '%Y-%m') = #{thisMonth};
 	</select>
 	
-	<select id="getAiByUserIdAndThisDay">
+	<select id="getAiByUserIdAndThisDayAndlBRRY_SEQ_NO">
 		SELECT *
 		FROM attendance_info
 		WHERE userId = #{userId}
+		AND LBRRY_SEQ_NO = #{LBRRY_SEQ_NO}
 		AND ai_date = #{thisDay};
 	</select>
 	

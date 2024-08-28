@@ -50,8 +50,8 @@ public class Attendance_infoController {
 		MemberDataDTO memberData = new MemberDataDTO();
 		
 
-		// 1. loginUser가 오늘 출석 했는지 확인.
-		if(aiservice.checkAttendance(loginUser, thisDay) == null) {
+		// 1. loginUser가 오늘 특정 도서관 출석 했는지 확인.
+		if(aiservice.checkAttendance(loginUser, thisDay, LBRRY_SEQ_NO) == null) {
 			// 2. 오늘 출석 안했다면 출석 정보 등록.
 			aiservice.attendance(loginUser, LBRRY_SEQ_NO);
 			// 3. 경험치 +10 추가

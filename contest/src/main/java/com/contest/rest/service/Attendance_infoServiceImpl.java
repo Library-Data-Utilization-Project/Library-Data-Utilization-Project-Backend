@@ -33,8 +33,8 @@ public class Attendance_infoServiceImpl implements Attendance_infoService {
 	
 	// 오늘 출석 체크
 	@Override
-	public Attendance_infoDTO checkAttendance(String userId, String thisDay) {
-		return atmapper.getAiByUserIdAndThisDay(userId, thisDay);
+	public Attendance_infoDTO checkAttendance(String userId, String thisDay, int LBRRY_SEQ_NO) {
+		return atmapper.getAiByUserIdAndThisDayAndlBRRY_SEQ_NO(userId, thisDay, LBRRY_SEQ_NO);
 	}
 
 
