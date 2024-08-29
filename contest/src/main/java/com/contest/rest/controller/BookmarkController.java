@@ -24,11 +24,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
 
 @RestController
 @RequestMapping("/bookmark")
@@ -49,7 +49,6 @@ public class BookmarkController {
 	
 	@PostMapping()
 	public ResponseEntity<MemberDataDTO> addBookmark(@CookieValue("loginUser") String cookie, HttpServletRequest request ,@RequestBody BookmarkDTO bookmark) throws Exception {
-		// 세션에서 아이디 가져오기
 		String loginUser = cookie;
 		
 		bookmark.setUserId(loginUser);

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,7 +36,6 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
-
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -58,8 +58,8 @@ public class UserController {
 	// 로그인
 	@PostMapping("/login")
 	public ResponseEntity<MemberDataDTO> join(HttpServletRequest request, HttpServletResponse response ,@RequestBody UserDTO user) throws Exception {
-		// 세션에 userId 값 넣기
 		String loginUser = user.getUserId();
+		
 		Cookie cookie = new Cookie("loginUser", loginUser);
 		cookie.setPath("/");
 		cookie.setMaxAge(1*60*60); // 1시간 저장

@@ -14,4 +14,9 @@
 	<!-- Update -->
 
 	<!-- delete -->
+	<delete id="deleteBmByUseriLBRRY_NAME">
+		delete from bookmark
+		where userId = #{userId}
+		and LBRRY_NAME = #{LBRRY_NAME}
+	</delete>
 </mapper>
