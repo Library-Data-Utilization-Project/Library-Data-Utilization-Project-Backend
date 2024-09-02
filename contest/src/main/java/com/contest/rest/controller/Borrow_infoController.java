@@ -46,6 +46,10 @@ public class Borrow_infoController {
 			// 대출 정보 추가하기.
 			biservice.addBi(loginUser);
 			
+			// 대출한 유저의 point +500
+			int point = 500;
+			uservice.addPoint(loginUser, point);
+			
 			memberData.setSuccess(true);
 			memberData.setMessage(loginUser+"님의 대출 정보가 등록되었습니다.");
 			return new ResponseEntity<>(memberData, HttpStatus.OK);

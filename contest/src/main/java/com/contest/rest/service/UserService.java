@@ -13,4 +13,6 @@ public interface UserService {
 	List<UserDTO> getUsers();
 	// 경험치 추가
 	boolean addExp(String userId, int exp);
+	// 포인트 추가
+	boolean addPoint(String userId, int point);
 }

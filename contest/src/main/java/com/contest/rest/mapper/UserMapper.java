@@ -17,5 +17,6 @@ public interface UserMapper {
 	void addExpById(String userId, int exp);
 	void resetExpById(String userId);
 	void addLevelById(String userId, int level);
+	int addPointById(String userId, int point);
 	// Delete
 }

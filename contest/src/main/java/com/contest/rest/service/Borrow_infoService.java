@@ -10,5 +10,4 @@ public interface Borrow_infoService {
 
 	// 대출 정보 추가하기.
 	boolean addBi(String userId);
-
 }

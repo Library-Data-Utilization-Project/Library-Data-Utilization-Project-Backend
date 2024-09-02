@@ -33,5 +33,10 @@
 		set level = level + #{level}
 		where userId = #{userId}
 	</update>
+	<update id="addPointById">
+		update user
+		set point = point + #{point}
+		where userId = #{userId}
+	</update>
 	
 </mapper>

@@ -49,4 +49,10 @@ public class UserServiceImpl implements UserService {
 			return true;
 		}
 	}
+
+	// 포인트 추가
+	@Override
+	public boolean addPoint(String userId, int point) {
+		return umapper.addPointById(userId, point) == 1;
+	}
 }
